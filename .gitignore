@@ -18,10 +18,12 @@ lib64/
 parts/
 sdist/
 var/
-stov/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# virtualenv folder
+stov/
 
 # Installer logs
 pip-log.txt
