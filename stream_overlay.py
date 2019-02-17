@@ -147,9 +147,9 @@ class StreamOverlayAPP(tk.Tk):
 
         session = HTMLSession()
         r = session.get(self.configs['save']['url'])
-        time.sleep(0.2)
+        time.sleep(1)
         r.html.render()
-        time.sleep(0.2)
+        time.sleep(1)
         page_source = str(r.html.html.encode('utf-8'))
         session.close()
 
