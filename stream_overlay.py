@@ -6,7 +6,7 @@ Created on Sun Feb 10 09:23:52 2019
 """
 import tkinter as tk
 from tkinter import ttk, font
-from requests_html import HTMLSession
+import requests_html
 import psutil
 import re
 import os
@@ -156,13 +156,12 @@ class StreamOverlayAPP(tk.Tk):
         self.job_sec = self.after(500, self.animation)
 
     def getNimoTVFollowers(self):
-        session = HTMLSession()
-        r = session.get(self.configs['save']['url'])
-        time.sleep(1)
-        r.html.render()
-        time.sleep(1)
-        page_source = str(r.html.html.encode('utf-8'))
-        session.close()
+        with requests_html.HTMLSession() as session:
+            resp = session.get(self.configs['save']['url'])
+            time.sleep(1)
+            resp.html.render()
+            time.sleep(1)
+            page_source = str(resp.html.html.encode('utf-8'))
 
         try:
             crop = re.findall(
