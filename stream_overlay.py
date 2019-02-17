@@ -16,14 +16,15 @@ import logging
 
 
 class StreamOverlayAPP(tk.Tk):
-
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
         logging.basicConfig(filename='errors.log', level=logging.ERROR,
                             format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
-        self.anim = 0
+        self.animtext = ["(~‾▿‾)~", "~(‾▿‾~)"]
+        self.animq = 0
+        self.animdir = 0
         self.followers = 0
         self.savedfollowers = 0
 
@@ -102,7 +103,8 @@ class StreamOverlayAPP(tk.Tk):
         self.button_start['state'] = 'enabled'
         self.button_stop['state'] = 'disabled'
         self.button_save['state'] = 'enabled'
-        self.after_cancel(self.job)
+        self.after_cancel(self.job_main)
+        self.after_cancel(self.job_sec)
 
     def start(self):
         self.readInput()
@@ -114,6 +116,7 @@ class StreamOverlayAPP(tk.Tk):
         self.button_stop['state'] = 'enabled'
         self.button_save['state'] = 'disabled'
         self.getNimoTVFollowers()
+        self.animation()
 
     def ReadConfigFile(self):
         try:
@@ -138,13 +141,21 @@ class StreamOverlayAPP(tk.Tk):
                     logging.error(
                         'Problem while loading the configurations file!')
 
-    def getNimoTVFollowers(self):
-        animtext = ["(~‾▿‾)~", " (~‾▿‾)~", "  (~‾▿‾)~", "   (~‾▿‾)~", "    (~‾▿‾)~", "    ~(‾▿‾~)", "   ~(‾▿‾~)", "  ~(‾▿‾~)", " ~(‾▿‾~)", "~(‾▿‾~)"]
-        self.animation_label['text'] = animtext[self.anim]
-        self.anim += 1
-        if self.anim >= len(animtext):
-            self.anim = 0
+    def animation(self):
+        if self.animdir == 0:
+            aux_str = ' ' * self.animq
+            self.animq += 1
+        else:
+            aux_str = ' ' * self.animq
+            self.animq -= 1
+        self.animation_label['text'] = aux_str + self.animtext[self.animdir]
+        if self.animq == 0:
+            self.animdir = 0
+        elif self.animq > 10:
+            self.animdir = 1
+        self.job_sec = self.after(500, self.animation)
 
+    def getNimoTVFollowers(self):
         session = HTMLSession()
         r = session.get(self.configs['save']['url'])
         time.sleep(1)
@@ -172,7 +183,7 @@ class StreamOverlayAPP(tk.Tk):
         if timeinterval == 0 or timeinterval > 3600:
             timeinterval = 10
         if self.followers < self.configs['save']['objective']:
-            self.job = self.after(timeinterval * 1000, self.getNimoTVFollowers)
+            self.job_main = self.after(timeinterval * 1000, self.getNimoTVFollowers)
 
 
 if __name__ == '__main__':
