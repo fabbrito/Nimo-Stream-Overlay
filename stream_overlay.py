@@ -73,8 +73,9 @@ class StreamOverlayAPP(tk.Tk):
         self.style.theme_use('winnative')
         self.style.layout('text.Horizontal.TProgressbar', [('Horizontal.Progressbar.trough', {'children': [('Horizontal.Progressbar.pbar', {
                           'side': 'left', 'sticky': 'ns'})], 'sticky': 'nswe'}), ('Horizontal.Progressbar.label', {'sticky': ''})])
-        self.style.configure('text.Horizontal.TProgressbar', font=self.overlayfont,
-                             text='0 / 0', thickness=self.configs['overlay']['progressbarthikness'])
+        self.style.configure('text.Horizontal.TProgressbar', font=self.overlayfont, text='0 / 0',
+                             thickness=self.configs['overlay']['progressbarthikness'], foreground=self.configs['overlay']['foregroundcolor'],
+                             background=self.configs['overlay']['backgroundcolor'], troughcolor=self.configs['overlay']['troughcolor'])
         self.progress = ttk.Progressbar(botf, orient="horizontal", length=self.configs['overlay']['progressbarlength'],
                                         mode="determinate", style='text.Horizontal.TProgressbar')
         self.progress.pack()
@@ -128,7 +129,7 @@ class StreamOverlayAPP(tk.Tk):
         self.configs = {'general': {}, 'overlay': {}, 'save': {}}
         for configtype in ['general', 'overlay', 'save']:
             crop_configs = re.findall(
-                configtype + r'.\w+ ?= ?[\"\w><\\\/ =.:]+', data)
+                configtype + r'.\w+ ?= ?[\"\w><\\\/ =.:#]+', data)
             for conf in crop_configs:
                 try:
                     config_name = re.split(r' ?= ?', conf)[
@@ -151,15 +152,15 @@ class StreamOverlayAPP(tk.Tk):
         self.animation_label['text'] = aux_str + self.animtext[self.animdir]
         if self.animq == 0:
             self.animdir = 0
-        elif self.animq > 10:
+        elif self.animq > 15:
             self.animdir = 1
         self.job_sec = self.after(500, self.animation)
 
     def getNimoTVFollowers(self):
         with requests_html.HTMLSession() as session:
-            resp = session.get(self.configs['save']['url'])
+            resp = session.get(self.configs['save']['url'], timeout=15)
             time.sleep(1)
-            resp.html.render()
+            resp.html.render(wait=1, timeout=15)
             time.sleep(1)
             page_source = str(resp.html.html.encode('utf-8'))
 
@@ -182,7 +183,8 @@ class StreamOverlayAPP(tk.Tk):
         if timeinterval == 0 or timeinterval > 3600:
             timeinterval = 10
         if self.followers < self.configs['save']['objective']:
-            self.job_main = self.after(timeinterval * 1000, self.getNimoTVFollowers)
+            self.job_main = self.after(
+                timeinterval * 1000, self.getNimoTVFollowers)
 
 
 if __name__ == '__main__':
