@@ -1,3 +1,3 @@
 Followers counter implementation to be used as an overlay for streamers in Nimo.TV
 
-stream_overlay.exe [sha-256: 5E010934492D534B36F71819F0ABE14CA70B24D5BDFA6408AD5AD6F4FBB6FF1E]
+stream_overlay.exe [sha-256: 87D5779574959EB12891728389DFE40DF99952D23B653D77007986FD7A8D39CB]
