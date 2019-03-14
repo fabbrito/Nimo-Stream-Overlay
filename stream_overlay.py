@@ -160,14 +160,14 @@ class StreamOverlayAPP(tk.Tk):
         with requests_html.HTMLSession() as session:
             resp = session.get(self.configs['save']['url'], timeout=15)
             time.sleep(1)
-            resp.html.render(wait=1, timeout=15)
+            resp.html.render(wait=1, timeout=15, sleep=1)
             time.sleep(1)
             page_source = str(resp.html.html.encode('utf-8'))
 
         try:
             crop = re.findall(
-                r"nimo-rm_followers[\"\w><\\\/ =.:]+followers:[\"\w><\\\/ =.:]+\d+", page_source)
-            self.followers = int(re.findall(r"\d+", crop[0])[0])
+                r"nimo-rm_followers[\"\w><\\\/ =.:]+followers:[\"\w><\\\/ =.:]+>\d+<", page_source)
+            self.followers = int(re.findall(r">\d+<", crop[0])[0][1:-1])
             if self.followers == 0:
                 self.followers = self.savedfollowers
             else:
