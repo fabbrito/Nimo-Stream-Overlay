@@ -8,7 +8,7 @@ cssselect==1.0.3
 fake-useragent==0.1.11
 future==0.17.1
 idna==2.8
-lxml==4.3.1
+lxml==4.6.3
 macholib==1.11
 parse==1.11.1
 pefile==2018.8.8
